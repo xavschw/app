@@ -2,6 +2,7 @@ on:
   push:
     branches:
       - feature/implement-token-listing-ui
+      - feature/transfer-to-HD-wallet
       - ci/*
 jobs:
   build_linux_version:
