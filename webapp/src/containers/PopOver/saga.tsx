@@ -1,7 +1,12 @@
 import { takeLatest, call, put } from 'redux-saga/effects';
 
 import showNotification from '../../utils/notifications';
-import { getErrorMessage, getNetworkType } from '../../utils/utility';
+import {
+  getBalance,
+  getErrorMessage,
+  getNetworkType,
+  getNewAddress,
+} from '../../utils/utility';
 import {
   backupLoadingStart,
   backupWalletStart,
@@ -16,6 +21,8 @@ import {
   openWalletRestartModal,
   restartModal,
   setIsWalletReplace,
+  transferFundsStart,
+  closeTransferFundsModal,
 } from './reducer';
 import {
   autoLockTimer,
@@ -32,6 +39,7 @@ import {
   IS_WALLET_LOCKED_MAIN,
   IS_WALLET_LOCKED_TEST,
   MAIN,
+  WALLET_SEND_PATH,
 } from '../../constants';
 import { replaceWalletDat } from '../../app/service';
 import { backupWallet } from '../../app/update.ipcRenderer';
@@ -120,6 +128,18 @@ function* restartWalletBeforeNewWalletCreation() {
   yield put(setIsWalletReplace());
 }
 
+function* fundTransfer(action) {
+  const {
+    payload: { history },
+  } = action;
+
+  const balance = yield call(getBalance);
+  const address = yield call(getNewAddress);
+
+  yield put(closeTransferFundsModal());
+  history.push(`${WALLET_SEND_PATH}?txAddress=${address}&txAmount=${balance}`);
+}
+
 function* mySaga() {
   yield takeLatest(backupLoadingStart.type, backupWalletbeforeUpdate);
   yield takeLatest(backupWalletStart.type, backupWalletBeforeNewWalletCreation);
@@ -130,5 +150,6 @@ function* mySaga() {
     restartWalletStart.type,
     restartWalletBeforeNewWalletCreation
   );
+  yield takeLatest(transferFundsStart.type, fundTransfer);
 }
 export default mySaga;

@@ -7,6 +7,11 @@ import {
   LOADING_BLOCK_INDEX_CODE,
 } from '../../constants';
 import RpcClient from '../../utils/rpc-client';
+import {
+  isWalletCreated,
+  getBalance,
+  checkFundsExistInNonHDWallet,
+} from '../../utils/utility';
 
 export const isBlockchainStarted = async (emitter, response) => {
   let retryAttempt = RETRY_ATTEMPT;
@@ -38,4 +43,17 @@ export const isBlockchainStarted = async (emitter, response) => {
       }
     }
   }, DIFF);
+};
+
+export const handleCheckFundsExistInNonHDWallet = async () => {
+  if (!isWalletCreated()) {
+    return false;
+  }
+
+  const balance = await getBalance();
+  if (balance === 0) {
+    return false;
+  }
+
+  return await checkFundsExistInNonHDWallet();
 };

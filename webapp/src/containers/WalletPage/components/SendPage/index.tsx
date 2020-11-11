@@ -90,6 +90,9 @@ class SendPage extends Component<SendPageProps, SendPageState> {
   tokenAmount = this.urlParams.get('amount');
   tokenAddress = this.urlParams.get('address');
 
+  txAddress = this.urlParams.get('txAddress');
+  txAmount = this.urlParams.get('txAmount');
+
   state = {
     walletBalance: 0,
     amountToSend: '',
@@ -109,6 +112,18 @@ class SendPage extends Component<SendPageProps, SendPageState> {
 
   componentDidMount() {
     this.props.fetchSendDataRequest();
+
+    // changing state, if need to transfer funds from
+    // non HD wallet to HD wallet
+    this.setState(
+      {
+        amountToSend: this.txAmount || '',
+        toAddress: this.txAddress || '',
+        amountToSendDisplayed: this.txAmount || 0,
+        isAmountValid: this.txAmount ? true: false,
+        isAddressValid: this.txAddress ? true : false
+      }
+    );
   }
 
   updateAmountToSend = (e) => {
@@ -264,9 +279,13 @@ class SendPage extends Component<SendPageProps, SendPageState> {
           DEFAULT_UNIT,
           this.props.unit
         );
-        // if amount to send is equal to wallet balance then cut tx fee from amountToSend
         try {
-          if (new BigNumber(amount).eq(this.props.sendData.walletBalance)) {
+          // send whole balance if found some funds in non HD wallet addresses
+          if(this.txAddress && this.txAmount){
+            await sendToAddress(this.state.toAddress, amount, true);
+          }
+          // if amount to send is equal to wallet balance then cut tx fee from amountToSend
+          else if (new BigNumber(amount).eq(this.props.sendData.walletBalance)) {
             await sendToAddress(this.state.toAddress, amount, true);
           } else {
             await sendToAddress(this.state.toAddress, amount, false);

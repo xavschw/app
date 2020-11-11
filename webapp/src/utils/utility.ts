@@ -549,3 +549,49 @@ export const getIcon = (symbol: string | null) => {
     return DefiIcon;
   }
 };
+
+export const getAddressAndAmountList = async () => {
+  const rpcClient = new RpcClient();
+  const addressObjectArray: any[] = await rpcClient.getListreceivedAddress();
+  return addressObjectArray.reduce(
+    (addressAndAmountList: any[], addressObject) => {
+      addressAndAmountList.push({
+        address: addressObject.address,
+        amount: addressObject.amount,
+      });
+      return addressAndAmountList;
+    },
+    []
+  );
+};
+
+export const getNewAddress = async () => {
+  const rpcClient = new RpcClient();
+  return await rpcClient.getNewAddress('fundTransferAddress');
+};
+
+export const getSeedIdForAddress = async (address: string) => {
+  const rpcClient = new RpcClient();
+  const addressInfo = await rpcClient.getaddressInfo(address);
+  return addressInfo.hdseedid;
+};
+
+export const getBalance = async () => {
+  const rpcClient = new RpcClient();
+  return await rpcClient.getBalance();
+};
+
+export const checkFundsExistInNonHDWallet = async () => {
+  const addressAndAmountList = await getAddressAndAmountList();
+
+  const hdAddress = await getNewAddress();
+  const hdSeedId = await getSeedIdForAddress(hdAddress);
+
+  for (const {address, amount} of addressAndAmountList) {
+    const seedId = await getSeedIdForAddress(address);
+    if (amount > 0 && seedId !== hdSeedId) {
+      return true;
+    }
+  }
+  return false;
+};

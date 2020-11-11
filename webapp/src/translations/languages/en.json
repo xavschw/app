@@ -570,6 +570,10 @@
     "restartWalletModalHeader": "Restart required",
     "restartWalletWarningNotice": "You need to restart DeFi app. Do you want to restart?",
     "yesRestartWalletNotice": "Restart now",
-    "noRestartWalletNotice": "Later"
+    "noRestartWalletNotice": "Later",
+    "transferFundsModalHeader": "Transfer Funds",
+    "transferFundsNotice": "You have some funds in non HD wallet addresses. Do you want to transfer whole funds to HD wallet?",
+    "yesTransferFundsNotice": "Send now",
+    "noTransferFundsNotice": "Later"
   }
 }

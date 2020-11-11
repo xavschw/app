@@ -17,9 +17,11 @@ import Popover from '../containers/PopOver';
 
 import EncryptWalletModel from '../containers/PopOver/EncryptWalletModel';
 import WalletPassphraseModel from '../containers/PopOver/WalletPassphraseModel';
+import TransferFundsModal from '../containers/PopOver/TransferFundsModal';
 
 interface AppProps extends RouteComponentProps {
   isRunning: boolean;
+  history: any;
   getRpcConfigsRequest: () => void;
   nodeError: string;
   isFetching: boolean;
@@ -50,6 +52,7 @@ const App: React.FunctionComponent<AppProps> = (props: AppProps) => {
     nodeError,
     isFetching,
     isRestart,
+    history,
   } = props;
 
   const prevDepth = useRef(getPathDepth(location));
@@ -102,6 +105,7 @@ const App: React.FunctionComponent<AppProps> = (props: AppProps) => {
       <EncryptWalletModel />
       <WalletPassphraseModel />
       <RestartWalletModel />
+      <TransferFundsModal history={history} />
     </>
   );
 };

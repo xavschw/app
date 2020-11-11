@@ -22,6 +22,7 @@ export const initialState = {
   isWalletUnlocked: false,
   isWalletRestart: false,
   isWalletReplace: false,
+  isTransferFundsModalOpen: false,
 };
 
 const configSlice = createSlice({
@@ -147,6 +148,13 @@ const configSlice = createSlice({
     setIsWalletReplace(state) {
       state.isWalletReplace = true;
     },
+    openTransferFundsModal(state) {
+      state.isTransferFundsModalOpen = true;
+    },
+    closeTransferFundsModal(state) {
+      state.isTransferFundsModalOpen = false;
+    },
+    transferFundsStart(state, action) {},
   },
 });
 
@@ -190,6 +198,9 @@ export const {
   closeWalletRestartModal,
   restartWalletStart,
   setIsWalletReplace,
+  openTransferFundsModal,
+  closeTransferFundsModal,
+  transferFundsStart,
 } = actions;
 
 export default reducer;

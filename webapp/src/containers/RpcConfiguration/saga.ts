@@ -8,6 +8,7 @@ import {
   startNodeRequest,
   storeConfigurationData,
   setQueueReady,
+  checkFundsExistInNonHDWalletStart,
 } from './reducer';
 import { getRpcConfig, startBinary } from '../../app/service';
 import showNotification from '../../utils/notifications';
@@ -20,9 +21,11 @@ import {
   openErrorModal,
   closeErrorModal,
   closeRestartLoader,
+  openTransferFundsModal,
 } from '../PopOver/reducer';
 import { fetchPaymentRequest } from '../WalletPage/reducer';
 import { fetchChainInfo } from '../WalletPage/saga';
+import { handleCheckFundsExistInNonHDWallet } from './service';
 
 function* blockChainNotStarted(message) {
   const { isRunning } = yield select((state) => state.app);
@@ -70,11 +73,23 @@ export function* getConfig() {
 export function* preCheck() {
   yield call(fetchChainInfo);
   yield put(fetchPaymentRequest());
+  yield put(checkFundsExistInNonHDWalletStart());
+}
+
+export function* checkFundsExistInNonHDWallet() {
+  const isFundsExist = yield call(handleCheckFundsExistInNonHDWallet);
+  if (isFundsExist) {
+    yield put(openTransferFundsModal());
+  }
 }
 
 function* mySaga() {
   yield takeLatest(getRpcConfigsRequest.type, getConfig);
   yield takeLatest(startNodeSuccess.type, preCheck);
+  yield takeLatest(
+    checkFundsExistInNonHDWalletStart.type,
+    checkFundsExistInNonHDWallet
+  );
 }
 
 export default mySaga;

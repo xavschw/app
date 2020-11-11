@@ -64,6 +64,7 @@ const configSlice = createSlice({
     killQueue(state) {
       state.isQueueReady = false;
     },
+    checkFundsExistInNonHDWalletStart(state) {},
   },
 });
 
@@ -79,6 +80,7 @@ export const {
   storeConfigurationData,
   setQueueReady,
   killQueue,
+  checkFundsExistInNonHDWalletStart
 } = actions;
 
 export default reducer;
